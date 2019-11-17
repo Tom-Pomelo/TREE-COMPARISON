@@ -1,10 +1,18 @@
 from TreeNode import *
+from BaseTree import *
+
+
+def retrieve_height(node):
+    if not node:
+        return -1
+    return max(retrieve_height(node.left), retrieve_height(node.right)) + 1
 
 
 def height(node):
     if not node:
         return -1
     else:
+        node.height = retrieve_height(node)
         return node.height
 
 
@@ -49,38 +57,31 @@ def balance(node):
             right_left_rotation(node)
 
 
-class AVL(object):
-    def __init__(self):
-        self.root = None
+class AVL(Tree):
+    def insert_helper(self, node, val):
+        if not node:
+            node = Node(val)
+            return node
+        if val < node.val:
+            node.left = self.insert_helper(node.left, val)
+        elif val > node.val:
+            node.right = self.insert_helper(node.right, val)
+        adjust_height(node)
+        balance(node)
+        return node
 
     def insert(self, val):
-        n = Node(val)
-        if not self.root:
-            self.root = n
+        self.root = self.insert_helper(self.root, val)
+
+    def search_helper(self, node, val):
+        if not node:
+            return None
+        elif node.val == val:
+            return node
+        elif node.val < val:
+            return self.search_helper(node.left, val)
         else:
-            curr = self.root
-            while True:
-                if val < curr.val:
-                    if curr.left:
-                        curr = curr.left
-                    else:
-                        curr.left = n
-                        n.parent = curr
-                        break
-                elif val > curr.val:
-                    if curr.right:
-                        curr = curr.right
-                    else:
-                        curr.right = n
-                        n.parent = curr
-                        break
-                else:
-                    curr.val = n.val
-                adjust_height(curr)
-                balance(curr)
+            return self.search_helper(node.right, val)
 
     def search(self, val):
-        pass
-
-    def traverse(self):
-        pass
+        return self.search_helper(self.root, val)

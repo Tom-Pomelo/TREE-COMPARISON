@@ -1,33 +1,20 @@
 from TreeNode import *
+from BaseTree import *
 
 
-class BST(object):
-    def __init__(self):
-        self.root = None
+class BST(Tree):
+    def insert_helper(self, node, val):
+        if not node:
+            node = Node(val)
+            return node
+        if val < node.val:
+            node.left = self.insert_helper(node.left, val)
+        elif val > node.val:
+            node.right = self.insert_helper(node.right, val)
+        return node
 
     def insert(self, val):
-        n = Node(val)
-        if not self.root:
-            self.root = n
-        else:
-            curr = self.root
-            while True:
-                if val < curr.val:
-                    if curr.left:
-                        curr = curr.left
-                    else:
-                        curr.left = n
-                        n.parent = curr
-                        break
-                elif val > curr.val:
-                    if curr.right:
-                        curr = curr.right
-                    else:
-                        curr.right = n
-                        n.parent = curr
-                        break
-                else:
-                    curr.val = n.val
+        self.root = self.insert_helper(self.root, val)
 
     def search_helper(self, node, val):
         if not node:
@@ -41,12 +28,3 @@ class BST(object):
 
     def search(self, val):
         return self.search_helper(self.root, val)
-
-    def traverse(self):
-        self.inorder(self.root)
-
-    def inorder(self, node):
-        if node:
-            self.inorder(node.left)
-            print(node.val)
-            self.inorder(node.right)
