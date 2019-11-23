@@ -1,3 +1,6 @@
+from queue import *
+
+
 class Tree(object):
     def __init__(self):
         self.root = None
@@ -8,11 +11,24 @@ class Tree(object):
     def search(self, val):
         pass
 
-    def traverse(self):
-        self.inorder(self.root)
-
-    def inorder(self, node):
+    def in_order(self, node):
         if node:
-            self.inorder(node.left)
+            self.in_order(node.left)
             print(node.val)
-            self.inorder(node.right)
+            self.in_order(node.right)
+
+    def level_order(self):
+        vec = []
+        q = Queue()
+        q.put(self.root)
+        while not q.empty():
+            v = []
+            for i in range(q.qsize()):
+                n = q.get()
+                v.append(n.val)
+                if n.left:
+                    q.put(n.left)
+                if n.right:
+                    q.put(n.right)
+            vec.append(v)
+        print(vec)

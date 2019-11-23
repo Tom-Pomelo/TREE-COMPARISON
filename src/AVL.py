@@ -29,32 +29,63 @@ def balance_factor(node):
 
 
 def left_left_rotation(node):
-    pass
+    l = node.left
+    lr = l.right
+    node.left = lr
+    l.right = node
+    return l
 
 
 def right_right_rotation(node):
-    pass
+    r = node.right
+    rl = r.left
+    node.right = rl
+    r.left = node
+    return r
 
 
 def left_right_rotation(node):
-    pass
+    l = node.left
+    lr = l.right
+    lrl = lr.left
+    lrr = lr.right
+    l.right = lrl
+    lr.left = l
+    node.left = lr
+
+    node.left = lrr
+    lr.right = node
+
+    return lr
 
 
 def right_left_rotation(node):
-    pass
+    r = node.right
+    rl = r.left
+    rll = rl.left
+    rlr = rl.right
+    r.left = rlr
+    rl.right = r
+    node.right = rl
+
+    node.right = rll
+    rl.left = node
+
+    return rl
 
 
 def balance(node):
     if balance_factor(node) > 1:
         if balance_factor(node.left) > 0:
-            left_left_rotation(node)
+            return left_left_rotation(node)
         else:
-            left_right_rotation(node)
+            return left_right_rotation(node)
     elif balance_factor(node) < -1:
         if balance_factor(node.right) < 0:
-            right_right_rotation(node)
+            return right_right_rotation(node)
         else:
-            right_left_rotation(node)
+            return right_left_rotation(node)
+    return node
 
 
 class AVL(Tree):
@@ -67,7 +98,7 @@ class AVL(Tree):
         elif val > node.val:
             node.right = self.insert_helper(node.right, val)
         adjust_height(node)
-        balance(node)
+        node = balance(node)
         return node
 
     def insert(self, val):

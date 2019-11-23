@@ -2,5 +2,5 @@ from TreeNode import *
 from BaseTree import *
 
 
-class BMinus(Tree):
+class BTree(Tree):
     pass
