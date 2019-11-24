@@ -8,8 +8,22 @@ class Tree(object):
     def insert(self, val):
         pass
 
+    def search_helper(self, node, val):
+        if not node:
+            return False
+        elif node.val == val:
+            return True
+        elif node.val < val:
+            return self.search_helper(node.right, val)
+        else:
+            return self.search_helper(node.left, val)
+
     def search(self, val):
-        pass
+        flag = self.search_helper(self.root, val)
+        if flag:
+            print('Found!')
+        else:
+            print('Not Found!')
 
     def in_order(self, node):
         if node:
