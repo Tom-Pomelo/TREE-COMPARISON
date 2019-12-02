@@ -8,22 +8,23 @@ class Tree(object):
     def insert(self, val):
         pass
 
-    def search_helper(self, node, val):
+    def search_helper(self, node, val, cnt):
         if not node:
-            return False
+            return cnt + 1, False
         elif node.val == val:
-            return True
+            return cnt + 1, True
         elif node.val < val:
-            return self.search_helper(node.right, val)
+            return self.search_helper(node.right, val, cnt + 1)
         else:
-            return self.search_helper(node.left, val)
+            return self.search_helper(node.left, val, cnt + 1)
 
     def search(self, val):
-        flag = self.search_helper(self.root, val)
+        cnt = 0
+        cnt, flag = self.search_helper(self.root, val, cnt)
         if flag:
-            print('Found!')
+            return cnt
         else:
-            print('Not Found!')
+            print('Element Not Found!')
 
     def in_order(self, node):
         if node:
@@ -32,7 +33,6 @@ class Tree(object):
             self.in_order(node.right)
 
     def level_order(self):
-        vec = []
         q = Queue()
         q.put(self.root)
         while not q.empty():
@@ -44,5 +44,5 @@ class Tree(object):
                     q.put(n.left)
                 if n.right:
                     q.put(n.right)
-            vec.append(v)
-        print(vec)
+            print(v)
+
