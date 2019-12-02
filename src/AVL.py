@@ -2,18 +2,16 @@ from TreeNode import *
 from BaseTree import *
 
 
-def retrieve_height(node):
-    if not node:
-        return -1
-    return max(retrieve_height(node.left), retrieve_height(node.right)) + 1
-
-
 def height(node):
     if not node:
-        return -1
-    else:
-        node.height = retrieve_height(node)
-        return node.height
+        return 0
+    if node.left and not node.right:
+        return height(node.left) + 1
+    if not node.left and node.right:
+        return height(node.right) + 1
+    if node.left and node.right:
+        return max(height(node.left), height(node.right)) + 1
+    return 0
 
 
 def adjust_height(node):
@@ -103,4 +101,3 @@ class AVL(Tree):
 
     def insert(self, val):
         self.root = self.insert_helper(self.root, val)
-
