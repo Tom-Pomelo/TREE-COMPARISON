@@ -4,8 +4,15 @@ from BTree import *
 from testcase import *
 from matplotlib import pyplot as plt
 from cycler import cycler
+import math
 import os
 import pickle
+from scipy import optimize
+import numpy as np
+
+
+def linear_func(x, k, b):
+    return k * x + b
 
 
 def plot():
@@ -25,24 +32,55 @@ def plot():
             t[1] = pickle.load(f)
             f.close()
 
-    plt.gca().set_prop_cycle(cycler('color', ['c', 'm', 'r']))
+    tree_size = [10, 50, 100, 500, 1000, 1500,
+                 2000, 2500, 3000, 3500, 4000, 4500, 5000]
+    log_tree_size = list(map(math.log, tree_size))
 
-    nums = [10, 50, 100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000]
-    plt.scatter(nums, kv[0][1], marker = '^')
+    file_1 = '../fig/original.png'
+    file_2 = '../fig/log.png'
 
-    plt.scatter(nums, kv[1][1], marker = '+')
+    if not os.path.exists(file_1):
+        plt.gca().set_prop_cycle(cycler('color', ['c', 'm', 'y']))
+        plt.scatter(tree_size, kv[0][1], marker='^')
+        plt.scatter(tree_size, kv[1][1], marker='+')
+        plt.scatter(tree_size, kv[2][1], marker='*')
+        plt.xlabel('Tree Size')
+        plt.ylabel('Num of Nodes Examined')
+        plt.title('Num of Nodes Examined vs Tree Size')
+        plt.legend(['Binary Search Tree', 'AVL Tree',
+                    'B-Tree'], loc='upper left')
+        plt.savefig('../fig/original.png')
+        plt.close()
+    if not os.path.exists(file_2):
+        plt.gca().set_prop_cycle(cycler('color', ['c', 'm', 'y']))
+        plt.scatter(log_tree_size, kv[0][1], marker='^')
+        plt.scatter(log_tree_size, kv[1][1], marker='+')
+        plt.scatter(log_tree_size, kv[2][1], marker='*')
 
-    plt.scatter(nums, kv[2][1], marker = '*')
+        a, b = optimize.curve_fit(linear_func, log_tree_size, kv[1][1])[0]
+        print(a, b)
+        x = np.arange(-2, 8, 0.1)
+        y = a * x + b
+        plt.plot(x, y, "m")
 
-    plt.xlabel('Tree Size')
-    plt.ylabel('Searches')
-    plt.title('Num of Searches vs Tree Size')
-    plt.legend(['Binary Search Tree', 'AVL Tree', 'B-Tree'], loc = 'upper left')
-    plt.show()
+        a, b = optimize.curve_fit(linear_func, log_tree_size, kv[2][1])[0]
+        print(a, b)
+        x = np.arange(-2, 8, 0.1)
+        y = a * x + b
+        plt.plot(x, y, "y")
+
+        plt.xlabel('Log(Tree Size)')
+        plt.ylabel('Num of Nodes Examined')
+        plt.title('Num of Nodes Examined vs Log(Tree Size)')
+        plt.legend(['Binary Search Tree', 'AVL Tree',
+                    'B-Tree'], loc='upper left')
+        plt.savefig('../fig/log.png')
+        plt.close()
 
 
 def main():
-    nums = [10, 50, 100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500, 5000]
+    nums = [10, 50, 100, 500, 1000, 1500, 2000,
+            2500, 3000, 3500, 4000, 4500, 5000]
     generate_tree(nums)
     for opt in range(3):
         if opt == 0:
@@ -64,7 +102,6 @@ def main():
                 cnt += T.search(v)
             avg = cnt / n
             res.append(avg)
-        print(res)
         with open(file_name, 'wb') as f:
             pickle.dump(res, f)
             f.close()
@@ -73,10 +110,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-    # T = AVL()
-    # T.insert(5)
-    # T.insert(10)
-    # T.insert(8)
-    # T.insert(3)
-    # T.insert(15)
-    # T.level_order()

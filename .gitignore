@@ -1,4 +1,6 @@
 /.vscode/
 /.idea/
 /proposal/
+/fig/
+/README/
 /src/__pycache__/
